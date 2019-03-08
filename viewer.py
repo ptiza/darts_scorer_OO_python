@@ -42,8 +42,11 @@ class Viewer(object):
 
   def get_score(self, player):
     #print player.name + " score: "
-    score = int(raw_input("%s's score: " %(player.name)))
-    return score
+    try:
+      score = int(raw_input("%s's score: " %(player.name)))
+      return score
+    except ValueError:
+      print("Please enter valid score!")
 
   def get_player_number(self):
     #print 'Start score: '
@@ -51,7 +54,6 @@ class Viewer(object):
     return playernumber
 
   def get_player_name(self,player_number):
-    #print "Player %s:" %(player_number)
     player = raw_input("Player %s: " %(player_number))
     return player
 
