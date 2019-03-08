@@ -5,8 +5,8 @@ from game import Game
 class TestGame(unittest.TestCase):
   
   def setUp(self):
-    self.player1 = Player("Jack", 501)
-    self.player2 = Player("Victor", 501)
+    self.player1 = Player(1, "Jack", 501)
+    self.player2 = Player(2,"Victor", 501)
 
     self.players = [self.player1, self.player2]
     self.game = Game(501,self.players,3,5)
@@ -25,7 +25,7 @@ class TestGame(unittest.TestCase):
     self.assertFalse(self.game.won())
 
   def test_game_won_true(self):
-    self.game.player1.current_score = 0
+    self.game.players[0].current_score = 0
     self.assertTrue(self.game.won())
 
 

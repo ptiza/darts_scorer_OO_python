@@ -1,6 +1,7 @@
 class Player(object):
 
-  def __init__(self, name, score):
+  def __init__(self, idx, name, score):
+    self.idx = idx
     self.name = name
     self.current_score = score
     self.scores = [] 

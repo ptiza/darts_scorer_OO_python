@@ -1,31 +1,54 @@
+from __future__ import print_function
 from throw import Throw
+from collections import deque
 import os
 import pdb
 
 
 class Viewer(object):
 
-  def print_scoreboard(self, game):
+  def print_scoreboard(self, match, game):
     os.system("clear")
-    print "\t     %s Sets %s" %(game.player1.sets_won, game.player2.sets_won)
-    print "\t     %s Legs %s" %(game.player1.legs_won, game.player2.legs_won)
-    print "\t\t%s" %(game.start_score)
-    print "\t%s\t |\t%s" %(game.player1.name, game.player2.name)
-    print "-----------------------------------"
+    print(self.border_msg("{:<3}").format(game.start_score))
+    print("")
+    print("Sets", end='')
+    print(''.join(['\t{:^8}']*len(game.players)).format(*[player.sets_won for player in game.players]), end='')
+    print('\n',end='')  
+    print("Legs", end='')
+    print(''.join(['\t{:^8}']*len(game.players)).format(*[player.legs_won for player in game.players]), end='')
+    print('\n',end='') 
+    print('-'*len(game.players)*19)
+    print(''.join(["\t{:^7}\t |"]*len(game.players)).format(*[player.name for player in game.players]), end='')
+    print('\n',end='') 
+    print('-'*len(game.players)*19)
+    check = []
+    rotation = deque(range(len(game.players)))
+    rotation.rotate(match.leg_thrower.idx*(len(game.players)-1))
 
-    for i in range(len(game.player1.scores)):
-      #pdb.set_trace()
-      if (len(game.player2.scores)) <= i:
-        print "\t%s\t |" %(game.player1.scores[i])
-      else:
-        #pdb.set_trace()
-        print "\t%s\t |\t %s" %(game.player1.scores[i], game.player2.scores[i])
-    print ""
+    for player in game.players:
+        check.append(len(player.scores)) 
+    for i in range(min(check)):   
+      print(''.join(["\t{:^7}\t |"]*len(game.players)).format(*[player.scores[i] for player in game.players]), end='')
+      print('\n',end='')
+    tmp_score = ['   ']*len(game.players)
+    for player in list(rotation):
+      if check[player] == max(check) and max(check) > 0:
+        tmp_score[player] = game.players[player].scores[max(check)-1]
+    if max(check) != min(check):    
+      print(''.join(["\t{:^7}\t |"]*len(game.players)).format(*tmp_score), end='')
+      print('\n',end='')
+
+      
 
   def get_score(self, player):
     #print player.name + " score: "
     score = int(raw_input("%s's score: " %(player.name)))
     return score
+
+  def get_player_number(self):
+    #print 'Start score: '
+    playernumber = int(raw_input("No. of Players: "))
+    return playernumber
 
   def get_player_name(self,player_number):
     #print "Player %s:" %(player_number)
@@ -51,15 +74,15 @@ class Viewer(object):
 
   def check_if_on_a_finish(self, player):
     if player.is_on_a_finish():
-      print  "%s, you require %s" %(player.name,player.current_score)
+      print ("{:s}, you require {:d}".format(player.name,player.current_score))
 
   def check_if_bust(self, player, player_throw):
     if (player.is_bust(player_throw)):
-      print "BUST!"
+      print("BUST!")
       #sleep 1
 
   def winner(self, player):
-    print "Game shot, and the leg, to %s!" %(player.name)
+    print("Game shot, and the leg, to {:s}!".format(player.name))
 
   def check_for_winning_throw(self, player, player_throw):
     if (player.is_winning_throw(player_throw)):
@@ -75,3 +98,11 @@ class Viewer(object):
     while not(player_throw.is_valid()):
       player_throw = self.get_throw_score(player)
     return player_throw
+
+  def border_msg(self, msg):
+
+      count = len(msg) + 10 # dash will need +2 too
+
+      dash = "-"*count 
+
+      return "+{dash}+\n|\t{msg}\t|\n+{dash}+".format(dash=dash,msg=msg)

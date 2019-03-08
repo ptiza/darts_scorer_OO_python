@@ -4,17 +4,17 @@ from game import Game
 
 class Match(object):
 
-  def __init__(self, player_1_name, player_2_name, sets, legs_per_set, start_score):
+  def __init__(self, playernames, sets, legs_per_set, start_score):
     self.viewer = Viewer()
-    player1 = Player(player_1_name, start_score)
-    player2 = Player(player_2_name, start_score)
+    self.players = range(len(playernames))
+    for i in range(len(playernames)):
+      self.players[i] = Player(i, playernames[i], start_score)
     self.start_score = start_score
-    self.players = [ player1, player2 ]
     self.sets = sets
     self.legs_per_set = legs_per_set
     self.game = Game(start_score, self.players, sets, legs_per_set)
-    self.set_thrower = player1
-    self.leg_thrower = player1   
+    self.set_thrower = self.players[0]
+    self.leg_thrower = self.players[0] 
 
   def turn(self, player):
     self.viewer.check_if_on_a_finish(player)
@@ -30,15 +30,17 @@ class Match(object):
     return (self.sets / 2) + 1
 
   def set_won(self):
-    if ((self.game.player1.legs_won == self.legs_needed_to_win_set()) or 
-          (self.game.player2.legs_won == self.legs_needed_to_win_set())):   
-      self.game.winner().sets_won += 1
-      return True
-    else:
-      return False 
+    for player in self.players:
+      if (player.legs_won == self.legs_needed_to_win_set()):   
+        self.game.winner().sets_won += 1
+        return True
+    return False 
 
   def match_won(self):
-    return ((self.game.player1.sets_won == self.sets_needed_to_win()) or (self.game.player2.sets_won == self.sets_needed_to_win()))
+    for player in self.players:
+      if player.sets_won == self.sets_needed_to_win():
+        return True
+    return False
 
   def play_match(self):
     while not(self.match_won()):
@@ -65,29 +67,29 @@ class Match(object):
     self.leg_thrower = self.game.thrower
 
   def new_set(self):
-    self.game.player1.legs_won = 0
-    self.game.player2.legs_won = 0
+    for num in range(len(self.game.players)):   
+      self.game.players[num].legs_won = 0
     self.new_game()
     self.game.thrower = self.switch_thrower(self.set_thrower)
     self.set_thrower = self.game.thrower
 
   def new_game(self):
-    self.game.player1.reset(self.start_score)
-    self.game.player2.reset(self.start_score)
+    for num in range(len(self.game.players)):
+      self.game.players[num].reset(self.start_score)
     self.game = Game(self.start_score, self.players, self.sets, self.legs_per_set)
 
   def switch_thrower(self,thrower):
-    if (thrower == self.game.player1):
-        thrower = self.game.player2
+    if (thrower == self.game.players[len(self.game.players)-1]):
+        thrower = self.game.players[0]
     else:
-        thrower = self.game.player1
+        thrower = self.game.players[self.game.players.index(thrower)+1]
     return thrower
 
   def play_leg(self):
-    self.viewer.print_scoreboard(self.game)    
+    self.viewer.print_scoreboard(self,self.game)    
     while not(self.game.won()):
       self.turn(self.game.thrower)
-      self.viewer.print_scoreboard(self.game)
+      self.viewer.print_scoreboard(self,self.game)
       self.game.switch_thrower();
 
   def display_winner(self,game):
