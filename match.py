@@ -6,8 +6,8 @@ class Match(object):
 
   def __init__(self, playernames, sets, legs_per_set, start_score):
     self.viewer = Viewer()
-    self.players = range(len(playernames))
-    for i in range(len(playernames)):
+    self.players = list(range(len(playernames)))
+    for i in list(range(len(playernames))):
       self.players[i] = Player(i, playernames[i], start_score)
     self.start_score = start_score
     self.sets = sets
@@ -24,16 +24,16 @@ class Match(object):
     player.throw_darts(player_throw)
 
   def legs_needed_to_win_set(self):
-    return (self.legs_per_set / 2) + 1
+    return int((self.legs_per_set / 2) + 1)
 
   def sets_needed_to_win(self):
-    return (self.sets / 2) + 1
+    return int((self.sets / 2) + 1)
 
   def set_won(self):
     for player in self.players:
       if (player.legs_won == self.legs_needed_to_win_set()):   
         self.game.winner().sets_won += 1
-        return True
+        return True 
     return False 
 
   def match_won(self):
@@ -45,7 +45,6 @@ class Match(object):
   def play_match(self):
     while not(self.match_won()):
       self.play_leg()
-      print
       self.leg_won()
 
   def leg_won(self):
@@ -67,14 +66,14 @@ class Match(object):
     self.leg_thrower = self.game.thrower
 
   def new_set(self):
-    for num in range(len(self.game.players)):   
+    for num in list(range(len(self.game.players))):   
       self.game.players[num].legs_won = 0
     self.new_game()
     self.game.thrower = self.switch_thrower(self.set_thrower)
     self.set_thrower = self.game.thrower
 
   def new_game(self):
-    for num in range(len(self.game.players)):
+    for num in list(range(len(self.game.players))):
       self.game.players[num].reset(self.start_score)
     self.game = Game(self.start_score, self.players, self.sets, self.legs_per_set)
 
@@ -94,4 +93,4 @@ class Match(object):
 
   def display_winner(self,game):
     winner = self.game.winner().name
-    print "Game shot, and the %s to %s" %(game, winner)
+    print("Game shot, and the {:s} to {:s}".format(game, winner))

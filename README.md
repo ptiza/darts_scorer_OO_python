@@ -5,7 +5,7 @@ The program also works out which player should throw first at the start of each 
 
 To run from command line:
 ```bash
-$ python dart_scorer.py
+$ python3 dart_scorer.py
 ```
 
 To run the tests:

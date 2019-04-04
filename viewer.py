@@ -1,4 +1,3 @@
-from __future__ import print_function
 from throw import Throw
 from collections import deque
 import os
@@ -43,35 +42,35 @@ class Viewer(object):
   def get_score(self, player):
     #print player.name + " score: "
     try:
-      score = int(raw_input("%s's score: " %(player.name)))
+      score = int(input("%s's score: " %(player.name)))
       return score
     except ValueError:
       print("Please enter valid score!")
 
   def get_player_number(self):
     #print 'Start score: '
-    playernumber = int(raw_input("No. of Players: "))
+    playernumber = int(input("No. of Players: "))
     return playernumber
 
   def get_player_name(self,player_number):
-    player = raw_input("Player %s: " %(player_number))
+    player = input("Player %s: " %(player_number))
     return player
 
   def get_start_score(self):
     #print 'Start score: '
-    start_score = int(raw_input("Start score: "))
+    start_score = int(input("Start score: "))
     return start_score
 
   def get_number_of_sets(self):
     number_of_sets = 0
     while ((number_of_sets %2) == 0):
-      number_of_sets = int(raw_input("How many sets ?(must be an odd number) "))
+      number_of_sets = int(input("How many sets ? (must be an odd number) "))
     return number_of_sets   
 
   def get_number_of_legs_per_set(self):
     number_of_legs_per_set = 0
     while ((number_of_legs_per_set %2) == 0):
-       number_of_legs_per_set = int(raw_input("How many legs per set (must be an odd number)? "))
+       number_of_legs_per_set = int(input("How many legs per set (must be an odd number)? "))
     return number_of_legs_per_set   
 
   def check_if_on_a_finish(self, player):
@@ -80,11 +79,11 @@ class Viewer(object):
 
   def check_if_bust(self, player, player_throw):
     if (player.is_bust(player_throw)):
-      print("BUST!")
+      print ("BUST!")
       #sleep 1
 
   def winner(self, player):
-    print("Game shot, and the leg, to {:s}!".format(player.name))
+    print ("Game shot, and the leg, to {:s}!".format(player.name))
 
   def check_for_winning_throw(self, player, player_throw):
     if (player.is_winning_throw(player_throw)):
